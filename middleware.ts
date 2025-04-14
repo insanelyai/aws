@@ -3,16 +3,16 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   // Allow preflight requests to pass through
-  if (request.method === "OPTIONS") {
-    return new NextResponse(null, {
-      status: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "http://18.215.226.190:3000",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    });
-  }
+  // if (request.method === "OPTIONS") {
+  //   return new NextResponse(null, {
+  //     status: 204,
+  //     headers: {
+  //       "Access-Control-Allow-Origin": "http://18.215.226.190:3000",
+  //       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  //       "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  //     },
+  //   });
+  // }
 
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
   const isLoginRoute = request.nextUrl.pathname === "/admin";
@@ -28,18 +28,18 @@ export function middleware(request: NextRequest) {
 
   // Add CORS headers to all other requests
   const response = NextResponse.next();
-  response.headers.set(
-    "Access-Control-Allow-Origin",
-    "http://18.215.226.190:3000"
-  );
-  response.headers.set(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-  response.headers.set(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
+  // response.headers.set(
+  //   "Access-Control-Allow-Origin",
+  //   "http://18.215.226.190:3000"
+  // );
+  // response.headers.set(
+  //   "Access-Control-Allow-Methods",
+  //   "GET, POST, PUT, DELETE, OPTIONS"
+  // );
+  // response.headers.set(
+  //   "Access-Control-Allow-Headers",
+  //   "Content-Type, Authorization"
+  // );
   return response;
 }
 

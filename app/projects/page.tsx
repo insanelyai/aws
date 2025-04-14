@@ -1,4 +1,3 @@
-import { getImageUrl } from "@/lib/s3";
 import connectToDatabase from "@/lib/mongodb";
 import mongoose from "mongoose";
 import Image from "next/image";
@@ -32,7 +31,7 @@ async function getProjects() {
   try {
     await connectToDatabase();
     const projects = await Project.find({}).sort({ createdAt: -1 });
-    console.log("Fetched projects:", projects);
+
     return projects || [];
   } catch (error) {
     console.error("Error fetching projects:", error);
@@ -40,25 +39,10 @@ async function getProjects() {
   }
 }
 
-async function getProjectWithImage(project: Project) {
-  if (!project?.imageKey) return { ...project.toObject(), imageUrl: null };
-  try {
-    const imageUrl = await getImageUrl(project.imageKey);
-    return { ...project.toObject(), imageUrl };
-  } catch (error) {
-    console.error("Error getting image URL:", error);
-    return { ...project.toObject(), imageUrl: null };
-  }
-}
-
 export default async function ProjectsPage() {
   try {
     const projects = await getProjects();
-    console.log("Projects before mapping:", projects);
-    const projectsWithImages = await Promise.all(
-      (projects || []).map(getProjectWithImage)
-    );
-    console.log("Projects with images:", projectsWithImages);
+    console.log("Projects:", projects);
 
     return (
       <div className='min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8'>
@@ -70,25 +54,37 @@ export default async function ProjectsPage() {
             </p>
           </div>
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-            {projectsWithImages?.map((project) => {
+            {projects?.map((project) => {
               if (!project._id) {
                 console.warn("Project or _id is undefined:", project);
                 return null;
               }
 
+              console.log("Project:", project.imageUrl);
               return (
                 <div
                   key={project._id.toString()}
                   className='bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300'
                 >
                   <div className='relative h-48'>
-                    {project.imageUrl && (
-                      <Image
-                        src={project.imageUrl}
-                        alt={project.title || "Project image"}
-                        fill
-                        className='object-cover'
-                      />
+                    {project.imageUrl ? (
+                      (() => {
+                        console.log("Project image URL:", project.imageUrl);
+                        return (
+                          <Image
+                            src={project.imageUrl}
+                            alt={project.title || "Project image"}
+                            width={800}
+                            height={600}
+                            className='object-cover w-full h-full'
+                            unoptimized
+                          />
+                        );
+                      })()
+                    ) : (
+                      <div className='flex items-center justify-center h-full bg-gray-200 text-gray-500'>
+                        No image available
+                      </div>
                     )}
                   </div>
                   <div className='p-6'>

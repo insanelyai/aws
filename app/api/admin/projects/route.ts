@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 const projectSchema = new mongoose.Schema({
   title: String,
   description: String,
-  imageKey: String,
+  imageUrl: String,
   technologies: [String],
   githubUrl: String,
   liveUrl: String,
@@ -62,11 +62,14 @@ export async function POST(request: Request) {
       );
     }
 
+    // Get the full S3 URL first
+    const imageUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${imageKey}`;
+
     await connectToDatabase();
     const project = await Project.create({
       title,
       description,
-      imageKey,
+      imageUrl, // Use the full S3 URL
       technologies,
       githubUrl,
       liveUrl,

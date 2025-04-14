@@ -1,13 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    domains: ["awsclouded.s3.us-east-1.amazonaws.com"],
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "awsclouded.s3.us-east-1.amazonaws.com",
-        pathname: "**",
+        hostname: "*.amazonaws.com",
       },
     ],
+    unoptimized: true,
   },
   async headers() {
     return [
@@ -16,7 +17,7 @@ const nextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: "http://18.215.226.190:3000", // Or "*" if you want to allow all origins (not recommended in prod)
+            value: "http://18.215.226.190:3000",
           },
           {
             key: "Access-Control-Allow-Methods",
@@ -30,8 +31,6 @@ const nextConfig = {
       },
     ];
   },
-  // Optional: use this only in dev mode if needed
-  allowedDevOrigins: ["http://18.215.226.190:3000"],
 };
 
 module.exports = nextConfig;

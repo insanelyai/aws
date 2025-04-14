@@ -2,12 +2,10 @@ import connectToDatabase from "@/lib/mongodb";
 import mongoose from "mongoose";
 import Image from "next/image";
 
-import { getImageUrl } from "@/lib/s3";
-
 const projectSchema = new mongoose.Schema({
   title: String,
   description: String,
-  imageKey: String,
+  imageUrl: String,
   technologies: [String],
   githubUrl: String,
   liveUrl: String,
@@ -18,7 +16,7 @@ const projectSchema = new mongoose.Schema({
 const articleSchema = new mongoose.Schema({
   title: String,
   content: String,
-  imageKey: String,
+  imageUrl: String,
   createdAt: Date,
   updatedAt: Date,
 });
@@ -46,21 +44,8 @@ export default async function Home() {
     getFeaturedArticles(),
   ]);
 
-  // Get image URLs for projects
-  const projectsWithImages = await Promise.all(
-    projects.map(async (project) => ({
-      ...project.toObject(),
-      imageUrl: project.imageKey ? await getImageUrl(project.imageKey) : null,
-    }))
-  );
-
-  // Get image URLs for articles
-  const articlesWithImages = await Promise.all(
-    articles.map(async (article) => ({
-      ...article.toObject(),
-      imageUrl: article.imageKey ? await getImageUrl(article.imageKey) : null,
-    }))
-  );
+  console.log("Featured projects:", projects);
+  console.log("Featured articles:", articles);
 
   return (
     <div className='min-h-screen bg-gradient-to-b from-gray-50 to-gray-100'>
@@ -90,7 +75,7 @@ export default async function Home() {
           </p>
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-          {projectsWithImages.map((project) => (
+          {projects.map((project) => (
             <div
               key={project._id.toString()}
               className='bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300'
@@ -100,8 +85,10 @@ export default async function Home() {
                   <Image
                     src={project.imageUrl}
                     alt={project.title}
-                    fill
-                    className='object-cover'
+                    width={800}
+                    height={600}
+                    className='object-cover w-full h-full'
+                    unoptimized
                   />
                 )}
               </div>
@@ -159,7 +146,7 @@ export default async function Home() {
           </p>
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-          {articlesWithImages.map((article) => (
+          {articles.map((article) => (
             <div
               key={article._id.toString()}
               className='bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300'
@@ -169,8 +156,10 @@ export default async function Home() {
                   <Image
                     src={article.imageUrl}
                     alt={article.title}
-                    fill
-                    className='object-cover'
+                    width={800}
+                    height={600}
+                    className='object-cover w-full h-full'
+                    unoptimized
                   />
                 )}
               </div>

@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 const articleSchema = new mongoose.Schema({
   title: String,
   content: String,
-  imageKey: String,
+  imageUrl: String,
   createdAt: Date,
   updatedAt: Date,
 });
@@ -56,11 +56,14 @@ export async function POST(request: Request) {
       );
     }
 
+    // Get the full S3 URL first
+    const imageUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${imageKey}`;
+
     await connectToDatabase();
     const article = await Article.create({
       title,
       content,
-      imageKey,
+      imageUrl, // Use the full S3 URL
       createdAt: new Date(),
       updatedAt: new Date(),
     });
