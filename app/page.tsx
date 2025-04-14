@@ -1,7 +1,7 @@
 import connectToDatabase from "@/lib/mongodb";
 import mongoose from "mongoose";
 import Image from "next/image";
-import Link from "next/link";
+
 import { getImageUrl } from "@/lib/s3";
 
 const projectSchema = new mongoose.Schema({
@@ -63,63 +63,86 @@ export default async function Home() {
   );
 
   return (
-    <div className='min-h-screen bg-gray-100'>
+    <div className='min-h-screen bg-gradient-to-b from-gray-50 to-gray-100'>
       {/* Hero Section */}
-      <div className='bg-white'>
-        <div className='max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8'>
+      <div className='relative overflow-hidden'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24'>
           <div className='text-center'>
-            <h1 className='text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl'>
-              Welcome to Overclouded
+            <h1 className='text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6'>
+              Welcome to My Portfolio
             </h1>
-            <p className='mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl'>
-              Explore my projects and articles on cloud computing, web
-              development, and more.
+            <p className='text-xl text-gray-600 max-w-3xl mx-auto'>
+              I&apos;m a passionate developer creating innovative solutions and
+              sharing knowledge through articles.
             </p>
           </div>
         </div>
       </div>
 
       {/* Featured Projects */}
-      <div className='max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8'>
-        <div className='flex justify-between items-center mb-8'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16'>
+        <div className='text-center mb-12'>
           <h2 className='text-3xl font-bold text-gray-900'>
             Featured Projects
           </h2>
-          <Link
-            href='/projects'
-            className='text-blue-600 hover:text-blue-800 font-medium'
-          >
-            View all projects →
-          </Link>
+          <p className='mt-4 text-lg text-gray-600'>
+            Check out some of my latest work
+          </p>
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
           {projectsWithImages.map((project) => (
             <div
               key={project._id.toString()}
-              className='bg-white rounded-lg shadow-lg overflow-hidden relative h-48'
+              className='bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300'
             >
-              {project.imageUrl && (
-                <Image
-                  src={project.imageUrl}
-                  alt={project.title}
-                  fill
-                  className='object-cover'
-                />
-              )}
+              <div className='relative h-48'>
+                {project.imageUrl && (
+                  <Image
+                    src={project.imageUrl}
+                    alt={project.title}
+                    fill
+                    className='object-cover'
+                  />
+                )}
+              </div>
               <div className='p-6'>
                 <h3 className='text-xl font-semibold text-gray-900 mb-2'>
                   {project.title}
                 </h3>
-                <p className='text-gray-600 mb-4'>{project.description}</p>
-                <div className='flex flex-wrap gap-2'>
+                <p className='text-gray-600 mb-4 line-clamp-2'>
+                  {project.description}
+                </p>
+                <div className='flex flex-wrap gap-2 mb-4'>
                   {project.technologies.slice(0, 3).map((tech: string) => (
                     <span
                       key={tech}
-                      className='bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded'
+                      className='bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full'
                     >
                       {tech}
                     </span>
                   ))}
+                </div>
+                <div className='flex gap-4'>
+                  {project.githubUrl && (
+                    <a
+                      href={project.githubUrl}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='text-blue-600 hover:text-blue-800 font-medium'
+                    >
+                      View on GitHub
+                    </a>
+                  )}
+                  {project.liveUrl && (
+                    <a
+                      href={project.liveUrl}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='text-blue-600 hover:text-blue-800 font-medium'
+                    >
+                      Live Demo
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -127,42 +150,42 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* Featured Articles */}
-      <div className='max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8'>
-        <div className='flex justify-between items-center mb-8'>
+      {/* Latest Articles */}
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white'>
+        <div className='text-center mb-12'>
           <h2 className='text-3xl font-bold text-gray-900'>Latest Articles</h2>
-          <Link
-            href='/articles'
-            className='text-blue-600 hover:text-blue-800 font-medium'
-          >
-            View all articles →
-          </Link>
+          <p className='mt-4 text-lg text-gray-600'>
+            Recent insights and tutorials
+          </p>
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
           {articlesWithImages.map((article) => (
-            <article
+            <div
               key={article._id.toString()}
-              className='bg-white rounded-lg shadow-lg overflow-hidden'
+              className='bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300'
             >
-              {article.imageUrl && (
-                <img
-                  src={article.imageUrl}
-                  alt={article.title}
-                  className='w-full h-48 object-cover'
-                />
-              )}
+              <div className='relative h-48'>
+                {article.imageUrl && (
+                  <Image
+                    src={article.imageUrl}
+                    alt={article.title}
+                    fill
+                    className='object-cover'
+                  />
+                )}
+              </div>
               <div className='p-6'>
                 <h3 className='text-xl font-semibold text-gray-900 mb-2'>
                   {article.title}
                 </h3>
-                <div className='text-sm text-gray-500 mb-4'>
+                <p className='text-gray-600 mb-4 line-clamp-3'>
+                  {article.content}
+                </p>
+                <div className='text-sm text-gray-500'>
                   {new Date(article.createdAt).toLocaleDateString()}
                 </div>
-                <p className='text-gray-600 line-clamp-3'>
-                  {article.content.replace(/<[^>]*>/g, "").substring(0, 150)}...
-                </p>
               </div>
-            </article>
+            </div>
           ))}
         </div>
       </div>

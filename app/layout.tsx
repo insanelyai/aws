@@ -40,18 +40,6 @@ export default function RootLayout({
                 >
                   Articles
                 </Link>
-                <Link
-                  href='#team'
-                  className='text-gray-600 hover:text-blue-600'
-                >
-                  Team
-                </Link>
-                <Link
-                  href='#contact'
-                  className='text-gray-600 hover:text-blue-600'
-                >
-                  Contact
-                </Link>
               </div>
             </div>
           </div>
