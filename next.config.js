@@ -10,10 +10,7 @@ const nextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value:
-              process.env.NODE_ENV === "development"
-                ? "http://18.215.226.190:3000"
-                : "http://18.215.226.190:3000", // Replace with your actual domain
+            value: "http://18.215.226.190:3000",
           },
           {
             key: "Access-Control-Allow-Methods",
@@ -27,9 +24,7 @@ const nextConfig = {
       },
     ];
   },
-  experimental: {
-    allowedDevOrigins: ["18.215.226.190"],
-  },
+  allowedDevOrigins: ["http://18.215.226.190:3000"],
 };
 
 module.exports = nextConfig;
